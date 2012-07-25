@@ -11,7 +11,9 @@ public class MediaRenderer {
 
     	CliMediaRenderer mediaRenderer = new CliMediaRenderer(PropertyHelper.getName());
 
-    	new UpnpServiceImpl().getRegistry().addDevice(
+    	UpnpServiceImpl upnp = new UpnpServiceImpl(new ApacheServiceConfiguration());
+    	
+    	upnp.getRegistry().addDevice(
                 mediaRenderer.getDevice()
         );
 
