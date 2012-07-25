@@ -17,6 +17,7 @@ Sources
 This app uses two key components:
 - Cling UPnP framework (LGPL) - http://4thline.org/projects/cling/
 - VLCJ (GPL) - https://github.com/caprica/vlcj
+
 The core of the UPnP code was based loosely on the Cling examples.
 
 License
