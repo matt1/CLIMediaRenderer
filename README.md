@@ -4,7 +4,8 @@ Cli Media Renderer is a command-line UPnP audio media renderer/DNLA DMR design f
 
 Why?
 ====
-I was looking for a simple no-fuss command line media renderer for a project I was working on for multi-room audio running on cheap storage-free computers (i.e. Raspberry Pi machines) but couldn't find anything that really met my needs.
+I was looking for a simple no-fuss command line media renderer for a project I was working on for multi-room audio running on cheap storage-free computers (i.e. Raspberry Pi machines) but couldn't find anything that really met my needs.  There seems to be many, many options for running a 
+media *server*, but not many options for a headless audio player.
 
 I could have used Squeezebox/Squeeze player but they apparently do not support UPnP which was a big letdown as my NAS only does UPnP and I didn't feel like hacking its firmware to support it.
 
@@ -14,8 +15,8 @@ Sources
 =======
 
 This app uses two key components:
-# Cling UPnP framework (LGPL) - http://4thline.org/projects/cling/
-# VLCJ (GPL) - http://code.google.com/p/vlcj/
+- Cling UPnP framework (LGPL) - http://4thline.org/projects/cling/
+- VLCJ (GPL) - https://github.com/caprica/vlcj
 The core of the UPnP code was based loosely on the Cling examples.
 
 License
