@@ -20,6 +20,8 @@ This app uses two key components:
 
 The core of the UPnP code was based loosely on the Cling examples.
 
+It also uses the Apache HTTP Core and Client libraries.  Yes yes - those are jar files checked in.  Yes I should use maven (or similar); one day I will make that happen but for pragmatic reasons for now I am just checking in everything needed to run.
+
 License
 =======
 Copyright (C) 2012 http://www.github.com/matt1
