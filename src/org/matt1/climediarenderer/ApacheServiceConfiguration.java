@@ -16,9 +16,10 @@ import org.fourthline.cling.transport.spi.StreamServer;
  * @author Matt
  *
  */
+@SuppressWarnings("rawtypes")
 public class ApacheServiceConfiguration extends DefaultUpnpServiceConfiguration {
 
-    @Override
+	@Override
     public StreamClient createStreamClient() {
         return new StreamClientImpl(new StreamClientConfigurationImpl());
     }

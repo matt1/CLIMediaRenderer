@@ -1,4 +1,3 @@
-
 package org.matt1.climediarenderer.services;
 
 import java.io.IOException;
@@ -21,18 +20,29 @@ import org.fourthline.cling.support.model.TransportInfo;
 import org.fourthline.cling.support.model.TransportSettings;
 import org.fourthline.cling.support.model.TransportState;
 import org.matt1.climediarenderer.player.BasicPlayer;
+import org.matt1.climediarenderer.player.PlayerException;
+import org.matt1.climediarenderer.player.VlcjPlayer;
 import org.seamless.http.HttpFetch;
 import org.seamless.util.URIUtil;
 
-
+/**
+ * The AVTransportService for the CLI Media Renderer handles mapping the requests from UPnP to
+ * the underlying BasicPlayer instance as well as handling events for updating the control point
+ * 
+ * @author Matt
+ *
+ */
 public class CliMRAVTransportService extends AbstractAVTransportService {
 
     final private static Logger log = Logger.getLogger(CliMRAVTransportService.class.getName());
 
+    /** The player instance that we are going to use for playback */
     private BasicPlayer player;  
     
+    /** Info about the media file */
     private MediaInfo mediaInfo = new MediaInfo();
     
+    /** Position information for the media */
     private PositionInfo positionInfo = new PositionInfo();
     
     private TransportInfo transportInfo = new TransportInfo();
@@ -41,6 +51,11 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
     
     private DeviceCapabilities deviceCapabilities = new DeviceCapabilities(new StorageMedium[]{});
     
+    /**
+     * Create a new CLI Media Renderer transport service
+     * 
+     * @param lastChange
+     */
     protected CliMRAVTransportService(LastChange lastChange) {
         super(lastChange);       
     }
@@ -70,16 +85,13 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
         }
         
         // Instantiate a new player
-        
-		player = new BasicPlayer(uri.toString(), this);
+		player = new VlcjPlayer(uri.toString(), this);
 
 		// Build media info
 		mediaInfo = new MediaInfo(currentURI, currentURIMetaData);
 		positionInfo = new PositionInfo(1, currentURIMetaData, currentURI);
 	    transportInfo = new TransportInfo(TransportState.STOPPED);    
 		
-
-
         getLastChange().setEventedValue(
                 getDefaultInstanceID(),
                 new AVTransportVariable.TransportState(TransportState.STOPPED),
@@ -130,32 +142,39 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
     @Override
     public void stop(UnsignedIntegerFourBytes instanceId) throws AVTransportException {
       if (player != null) {
-    	  player.stop();
-    	  transportInfo = new TransportInfo(TransportState.STOPPED);
-          this.getLastChange().setEventedValue(
-                  this.getCurrentInstanceIds()[0],
-                  new AVTransportVariable.TransportState(TransportState.STOPPED)
-          );
-          this.getLastChange().fire(getPropertyChangeSupport());
+    	  try {
+			player.stop();
+			transportInfo = new TransportInfo(TransportState.STOPPED);
+			this.getLastChange().setEventedValue(
+				this.getCurrentInstanceIds()[0],
+				new AVTransportVariable.TransportState(TransportState.STOPPED)
+			);
+			this.getLastChange().fire(getPropertyChangeSupport());
+		} catch (PlayerException e) {
+			throw new AVTransportException(ErrorCode.ACTION_FAILED, e.getMessage());
+		}
+
       }
     }
 
     @Override
     public void play(UnsignedIntegerFourBytes instanceId, String speed) throws AVTransportException {
        if (player != null) {
-    	   player.play();
-    	   transportInfo = new TransportInfo(TransportState.PLAYING);
-
-
-           getLastChange().setEventedValue(
-                   getDefaultInstanceID(),
-                   new AVTransportVariable.TransportState(TransportState.PLAYING),
-                   new AVTransportVariable.CurrentTransportActions(new TransportAction[]{
-                           TransportAction.Stop
-                   })
-           );
-           getLastChange().fire(getPropertyChangeSupport());
-
+    	   try {
+	    	   player.play();
+	    	   transportInfo = new TransportInfo(TransportState.PLAYING);
+	
+	           getLastChange().setEventedValue(
+	                   getDefaultInstanceID(),
+	                   new AVTransportVariable.TransportState(TransportState.PLAYING),
+	                   new AVTransportVariable.CurrentTransportActions(new TransportAction[]{
+	                           TransportAction.Stop
+	                   })
+	           );
+	           getLastChange().fire(getPropertyChangeSupport());
+    	   } catch (PlayerException e) {
+    		   throw new AVTransportException(ErrorCode.ACTION_FAILED, e.toString());
+    	   }
        } else {
     	   transportInfo = new TransportInfo(TransportState.STOPPED);
     	   throw new AVTransportException(ErrorCode.INVALID_ACTION, "No player created - try setting URI of media first.");
@@ -165,7 +184,28 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
 
     @Override
     public void pause(UnsignedIntegerFourBytes instanceId) throws AVTransportException {
-  
+    	if (player != null) {
+     	   try {
+ 	    	   player.pause();
+ 	    	   transportInfo = new TransportInfo(TransportState.PAUSED_PLAYBACK);
+ 	
+ 	           getLastChange().setEventedValue(
+ 	                   getDefaultInstanceID(),
+ 	                   new AVTransportVariable.TransportState(TransportState.PAUSED_PLAYBACK),
+ 	                   new AVTransportVariable.CurrentTransportActions(new TransportAction[]{
+ 	                           TransportAction.Stop,
+ 	                           TransportAction.Play
+ 	                   })
+ 	           );
+ 	           getLastChange().fire(getPropertyChangeSupport());
+     	   } catch (PlayerException e) {
+     		   throw new AVTransportException(ErrorCode.ACTION_FAILED, e.toString());
+     	   }
+        } else {
+     	   transportInfo = new TransportInfo(TransportState.STOPPED);
+     	   throw new AVTransportException(ErrorCode.INVALID_ACTION, "No player created - try setting URI of media first.");
+        }
+        
     }
 
     @Override
@@ -180,34 +220,29 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
 
     @Override
     public void next(UnsignedIntegerFourBytes instanceId) throws AVTransportException {
-        // Not implemented
-        log.info("### TODO: Not implemented: Next");
+    	throw new AVTransportException(ErrorCode.INVALID_ACTION, "Next not supported.");
     }
 
     @Override
     public void previous(UnsignedIntegerFourBytes instanceId) throws AVTransportException {
-        // Not implemented
-        log.info("### TODO: Not implemented: Previous");
+    	throw new AVTransportException(ErrorCode.INVALID_ACTION, "Previous not supported.");
     }
 
     @Override
     public void setNextAVTransportURI(UnsignedIntegerFourBytes instanceId,
                                       String nextURI,
                                       String nextURIMetaData) throws AVTransportException {
-        log.info("### TODO: Not implemented: SetNextAVTransportURI");
-        // Not implemented
+    	throw new AVTransportException(ErrorCode.INVALID_ACTION, "Next URI not supported.");
     }
 
     @Override
     public void setPlayMode(UnsignedIntegerFourBytes instanceId, String newPlayMode) throws AVTransportException {
-        // Not implemented
-        log.info("### TODO: Not implemented: SetPlayMode");
+    	throw new AVTransportException(ErrorCode.INVALID_ACTION, "Setting playmode not supported.");
     }
 
     @Override
     public void setRecordQualityMode(UnsignedIntegerFourBytes instanceId, String newRecordQualityMode) throws AVTransportException {
-        // Not implemented
-        log.info("### TODO: Not implemented: SetRecordQualityMode");
+    	throw new AVTransportException(ErrorCode.INVALID_ACTION, "Record not supported.");
     }
 
     @Override
@@ -219,6 +254,5 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
     @Override
     public UnsignedIntegerFourBytes[] getCurrentInstanceIds() {
 		return new UnsignedIntegerFourBytes[]{getDefaultInstanceID()};
-       
     }
 }

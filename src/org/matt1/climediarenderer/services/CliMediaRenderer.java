@@ -17,6 +17,9 @@
 
 package org.matt1.climediarenderer.services;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.fourthline.cling.binding.LocalServiceBinder;
 import org.fourthline.cling.binding.annotations.AnnotationLocalServiceBinder;
 import org.fourthline.cling.model.DefaultServiceManager;
@@ -25,6 +28,7 @@ import org.fourthline.cling.model.ServiceManager;
 import org.fourthline.cling.model.ValidationException;
 import org.fourthline.cling.model.meta.DeviceDetails;
 import org.fourthline.cling.model.meta.DeviceIdentity;
+import org.fourthline.cling.model.meta.Icon;
 import org.fourthline.cling.model.meta.LocalDevice;
 import org.fourthline.cling.model.meta.LocalService;
 import org.fourthline.cling.model.meta.ManufacturerDetails;
@@ -34,10 +38,10 @@ import org.fourthline.cling.model.types.UDN;
 import org.fourthline.cling.support.avtransport.lastchange.AVTransportLastChangeParser;
 import org.fourthline.cling.support.lastchange.LastChange;
 import org.fourthline.cling.support.lastchange.LastChangeAwareServiceManager;
-import org.fourthline.cling.support.renderingcontrol.lastchange.RenderingControlLastChangeParser;
 
 /**
- * Creates a new CliMediaRenderer UPnP instance, setting up all of the appropriate UPnP services that are required.
+ * Creates a new CliMediaRenderer UPnP instance, setting up all of the appropriate UPnP services 
+ * that are required such as the AVTransportService.
  * 
  * @author Matt
  *
@@ -49,19 +53,15 @@ public class CliMediaRenderer {
 	
 	/** Service Binder for attaching services to a device */
     protected LocalServiceBinder serviceBinder = new AnnotationLocalServiceBinder();
-
-    // These are shared between all "logical" player instances of a single service
+    
+    /** The LastChange object for the AVTransport */
     protected LastChange avTransportLastChange = new LastChange(new AVTransportLastChangeParser());
-    protected LastChange renderingControlLastChange = new LastChange(new RenderingControlLastChangeParser());
-
+    
     /** Service manager for the connection service */
     protected ServiceManager<CliMRConnectionManagerService> connectionServiceManager;
     
     /** The actual AV Transport service manager */
     protected LastChangeAwareServiceManager<CliMRAVTransportService> audioTransportServiceManager;
-    
-    /** The rendering control service manager */
-    protected LastChangeAwareServiceManager<CliMRAudioRenderingControl> renderingControlServiceManager;
 
     /** Default manufacturer name */
     private static final String MANUFACTURER_NAME = "";
@@ -86,8 +86,9 @@ public class CliMediaRenderer {
      * 
      * @throws IllegalArgumentException
      * @throws ValidationException
+     * @throws IOException 
      */
-    public CliMediaRenderer() throws IllegalArgumentException, ValidationException {
+    public CliMediaRenderer() throws IllegalArgumentException, ValidationException, IOException {
         
     	this(new DeviceDetails(
                 "MediaRenderer on " + ModelUtil.getLocalHostName(false),
@@ -96,7 +97,16 @@ public class CliMediaRenderer {
         ));
     }
     
-    public CliMediaRenderer(String name) throws IllegalArgumentException, ValidationException {
+    /**
+     * Creates a new device using a specific name
+     * 
+     * @param name
+     * @throws IllegalArgumentException
+     * @throws ValidationException
+     * @throws IOException 
+     */
+    public CliMediaRenderer(String name) throws IllegalArgumentException, 
+    	ValidationException, IOException {
     	this(new DeviceDetails(
                 name,
                 new ManufacturerDetails(MANUFACTURER_NAME, MANUFACTURER_SITE),
@@ -109,11 +119,14 @@ public class CliMediaRenderer {
      * @param deviceDetails Details about this device
      * @throws ValidationException 
      * @throws IllegalArgumentException 
+     * @throws IOException 
      */
     @SuppressWarnings("unchecked")
-	public CliMediaRenderer(DeviceDetails deviceDetails) throws IllegalArgumentException, ValidationException {
+	public CliMediaRenderer(DeviceDetails deviceDetails) throws IllegalArgumentException, 
+		ValidationException, IOException {
     
-        // The connection manager doesn't have to do much, HTTP is stateless
+    	Icon icon = new Icon("image/png", 48, 48, 8, new File("icon.png"));
+    	
         LocalService<CliMRConnectionManagerService> connectionManagerService = serviceBinder.read(CliMRConnectionManagerService.class);
         connectionServiceManager =
                 new DefaultServiceManager<CliMRConnectionManagerService>(connectionManagerService) {
@@ -124,52 +137,38 @@ public class CliMediaRenderer {
                 };
         connectionManagerService.setManager(connectionServiceManager);
 
-        // The AVTransport just passes the calls on to the backend players
         LocalService<CliMRAVTransportService> audioTransportService = serviceBinder.read(CliMRAVTransportService.class);
         audioTransportServiceManager =
                 new LastChangeAwareServiceManager<CliMRAVTransportService>(
                         audioTransportService,
-                        new AVTransportLastChangeParser()
-                ) {
+                        new AVTransportLastChangeParser()) {
                     @Override
                     protected CliMRAVTransportService createServiceInstance() throws Exception {
                         return new CliMRAVTransportService(avTransportLastChange);
                     }
                 };
-               
         audioTransportService.setManager(audioTransportServiceManager);
-
-        // The Rendering Control just passes the calls on to the backend players
-        LocalService<CliMRAudioRenderingControl> renderingControlService = serviceBinder.read(CliMRAudioRenderingControl.class);
-        renderingControlServiceManager =
-                new LastChangeAwareServiceManager<CliMRAudioRenderingControl>(
-                        renderingControlService,
-                        new RenderingControlLastChangeParser()
-                ) {
-                    @Override
-                    protected CliMRAudioRenderingControl createServiceInstance() throws Exception {
-                        return new CliMRAudioRenderingControl(renderingControlLastChange);
-                    }
-                };
-        renderingControlService.setManager(renderingControlServiceManager);
 
         uPnPDevice = new LocalDevice(
                 new DeviceIdentity(UDN.uniqueSystemIdentifier("Cling MediaRenderer")),
                 new UDADeviceType("MediaRenderer", 1),
                 deviceDetails,
+                icon,
                 new LocalService[]{
                         audioTransportService,
-                        renderingControlService,
                         connectionManagerService
                 }
         );
 
-
+        // Finally setup last change thread to send updates back to subscribers.
         initLastChangeThread();
     }
 
+    /**
+     * Starts a thread that will run and send all "last change" events (e.g. player state change)
+     * back to any subscribing control points
+     */
     protected void initLastChangeThread() {
-        // TODO: We should only run this if we actually have event subscribers
         Thread changeThread = new Thread() {
             @Override
             public void run() {
@@ -177,7 +176,6 @@ public class CliMediaRenderer {
                     while (true) {
                         // These operations will NOT block and wait for network responses
                         audioTransportServiceManager.fireLastChange();
-                        renderingControlServiceManager.fireLastChange();
                         Thread.sleep(250);
                     }
                 } catch (Exception ex) {
@@ -199,10 +197,6 @@ public class CliMediaRenderer {
 
     public ServiceManager<CliMRAVTransportService> getAvTransport() {
         return audioTransportServiceManager;
-    }
-
-    public ServiceManager<CliMRAudioRenderingControl> getRenderingControl() {
-        return renderingControlServiceManager;
     }
 
 }
