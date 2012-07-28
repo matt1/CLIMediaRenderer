@@ -38,6 +38,7 @@ import org.fourthline.cling.model.types.UDN;
 import org.fourthline.cling.support.avtransport.lastchange.AVTransportLastChangeParser;
 import org.fourthline.cling.support.lastchange.LastChange;
 import org.fourthline.cling.support.lastchange.LastChangeAwareServiceManager;
+import org.fourthline.cling.support.renderingcontrol.lastchange.RenderingControlLastChangeParser;
 
 /**
  * Creates a new CliMediaRenderer UPnP instance, setting up all of the appropriate UPnP services 
@@ -57,11 +58,17 @@ public class CliMediaRenderer {
     /** The LastChange object for the AVTransport */
     protected LastChange avTransportLastChange = new LastChange(new AVTransportLastChangeParser());
     
+    /** The last change object for the Rendering Control */
+    protected LastChange renderingControlLastChange = new LastChange(new RenderingControlLastChangeParser());
+
     /** Service manager for the connection service */
     protected ServiceManager<CliMRConnectionManagerService> connectionServiceManager;
     
     /** The actual AV Transport service manager */
     protected LastChangeAwareServiceManager<CliMRAVTransportService> audioTransportServiceManager;
+    
+    /** The rendering control service manager */
+    protected LastChangeAwareServiceManager<CliMRAudioRenderingControl> renderingControlServiceManager;
 
     /** Default manufacturer name */
     private static final String MANUFACTURER_NAME = "";
@@ -149,6 +156,20 @@ public class CliMediaRenderer {
                 };
         audioTransportService.setManager(audioTransportServiceManager);
 
+        LocalService<CliMRAudioRenderingControl> renderingControlService = serviceBinder.read(CliMRAudioRenderingControl.class);
+        renderingControlServiceManager =
+                new LastChangeAwareServiceManager<CliMRAudioRenderingControl>(
+                        renderingControlService,
+                        new RenderingControlLastChangeParser()
+                ) {
+                    @Override
+                    protected CliMRAudioRenderingControl createServiceInstance() throws Exception {
+                        return new CliMRAudioRenderingControl(renderingControlLastChange);
+                    }
+                };
+       renderingControlService.setManager(renderingControlServiceManager);
+
+        
         uPnPDevice = new LocalDevice(
                 new DeviceIdentity(UDN.uniqueSystemIdentifier("Cling MediaRenderer")),
                 new UDADeviceType("MediaRenderer", 1),
@@ -156,6 +177,7 @@ public class CliMediaRenderer {
                 icon,
                 new LocalService[]{
                         audioTransportService,
+                        renderingControlService,
                         connectionManagerService
                 }
         );
