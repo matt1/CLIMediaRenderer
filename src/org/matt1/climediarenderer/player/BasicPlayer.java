@@ -31,11 +31,35 @@ public interface BasicPlayer {
 	public void pause() throws PlayerException;
 	
 	/**
-	 * Skip forwards or backwards by a number of milliseconds.  Pass in a negative value to skip
+	 * Skip forwards or backwards by a number of seconds.  Pass in a negative value to skip
 	 * backwards.
 	 * 
 	 * @param milliseconds
 	 * @throws PlayerException
 	 */
-	public void skip(long milliseconds) throws PlayerException;
+	public void skip(long seconds) throws PlayerException;
+	
+	/**
+	 * Get the position of the track in seconds
+	 * @return
+	 */
+	public long getPosition();
+	
+	/**
+	 * Gets the track duration in seconds
+	 * @return
+	 */
+	public long getDuration();
+	
+	/**
+	 * Get the position of the track, from 0 to 1.0
+	 * @return
+	 */
+	public float getPositionPercentage();
+	
+	/**
+	 * Get the current URI being played
+	 * @return
+	 */
+	public String getCurrentUri();
 }

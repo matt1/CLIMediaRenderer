@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import org.fourthline.cling.model.ModelUtil;
 import org.fourthline.cling.model.types.ErrorCode;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.avtransport.AVTransportErrorCode;
@@ -85,10 +86,11 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
         }
         
         // Instantiate a new player
-		player = new VlcjPlayer(uri.toString(), this);
+		player = new VlcjPlayer(uri.toString());
 
 		// Build media info
-		mediaInfo = new MediaInfo(currentURI, currentURIMetaData);
+		String duration = ModelUtil.toTimeString(player.getDuration());
+		mediaInfo = new MediaInfo(currentURI, currentURIMetaData, null, duration, null);
 		positionInfo = new PositionInfo(1, currentURIMetaData, currentURI);
 	    transportInfo = new TransportInfo(TransportState.STOPPED);    
 		
@@ -118,7 +120,19 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
     }
 
     @Override
-    public PositionInfo getPositionInfo(UnsignedIntegerFourBytes instanceId) throws AVTransportException {
+    public PositionInfo getPositionInfo(UnsignedIntegerFourBytes instanceId) 
+    		throws AVTransportException {
+		if (player == null) {
+			// nop
+		} else {
+			long position = player.getPosition();
+			long duration = player.getDuration();
+			String positionString = ModelUtil.toTimeString(position);
+			String durationString = ModelUtil.toTimeString(duration);
+			positionInfo = new PositionInfo(0, durationString, 
+					player.getCurrentUri(), positionString, positionString);
+			
+		}
 		return positionInfo;
        
     }

@@ -204,26 +204,25 @@ public class CliMediaRenderer {
         );
 
         // Finally setup last change thread to send updates back to subscribers.
-        initLastChangeThread();
+        initChangeThread();
     }
 
     /**
      * Starts a thread that will run and send all "last change" events (e.g. player state change)
      * back to any subscribing control points
      */
-    protected void initLastChangeThread() {
+    protected void initChangeThread() {
         Thread changeThread = new Thread() {
             @Override
             public void run() {
                 try {
                     while (true) {
-                        // These operations will NOT block and wait for network responses
                         audioTransportServiceManager.fireLastChange();
                         renderingControlServiceManager.fireLastChange();
                         Thread.sleep(250);
                     }
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                	log.info("Exception caught in lastChangeThread(): " + ex.getMessage());
                 }
             }
         };
