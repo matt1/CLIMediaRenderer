@@ -41,4 +41,12 @@ public class PropertyHelper {
 		return (String) properties.getProperty("name");
 	}
 	
+	/**
+	 * Gets the path to the icon file
+	 * @return
+	 */
+	public static String getIconPath() {
+		return (String) properties.getProperty("icon");
+	}
+	
 }

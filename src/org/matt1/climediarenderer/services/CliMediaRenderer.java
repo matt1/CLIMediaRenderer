@@ -19,11 +19,11 @@ package org.matt1.climediarenderer.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.fourthline.cling.binding.LocalServiceBinder;
 import org.fourthline.cling.binding.annotations.AnnotationLocalServiceBinder;
 import org.fourthline.cling.model.DefaultServiceManager;
-import org.fourthline.cling.model.ModelUtil;
 import org.fourthline.cling.model.ServiceManager;
 import org.fourthline.cling.model.ValidationException;
 import org.fourthline.cling.model.meta.DeviceDetails;
@@ -39,6 +39,7 @@ import org.fourthline.cling.support.avtransport.lastchange.AVTransportLastChange
 import org.fourthline.cling.support.lastchange.LastChange;
 import org.fourthline.cling.support.lastchange.LastChangeAwareServiceManager;
 import org.fourthline.cling.support.renderingcontrol.lastchange.RenderingControlLastChangeParser;
+import org.matt1.climediarenderer.utils.PropertyHelper;
 
 /**
  * Creates a new CliMediaRenderer UPnP instance, setting up all of the appropriate UPnP services 
@@ -48,7 +49,10 @@ import org.fourthline.cling.support.renderingcontrol.lastchange.RenderingControl
  *
  */
 public class CliMediaRenderer {
-
+	
+	/** Log used to display messaes to the console */
+	private static Logger log = Logger.getLogger(CliMediaRenderer.class.getName());
+	
 	/** Logical "device" represented to the network and which offers the services */
 	protected LocalDevice uPnPDevice;
 	
@@ -98,7 +102,7 @@ public class CliMediaRenderer {
     public CliMediaRenderer() throws IllegalArgumentException, ValidationException, IOException {
         
     	this(new DeviceDetails(
-                "MediaRenderer on " + ModelUtil.getLocalHostName(false),
+                "CliMediaRenderer",
                 new ManufacturerDetails(MANUFACTURER_NAME, MANUFACTURER_SITE),
                 new ModelDetails(MODEL_NAME, MODEL_DESCRIPTION, MODEL_VERSION, MODEL_SITE)
         ));
@@ -122,6 +126,25 @@ public class CliMediaRenderer {
     }
     
     /**
+     * Try loading the icon specified in the properties file
+     */
+    private Icon loadIcon() {
+    	File iconFile = new File(PropertyHelper.getIconPath());
+    	Icon icon = null;
+    	try {
+	    	if (iconFile.exists() && iconFile.canRead()) {
+	    		icon = new Icon("image/png", 48, 48, 8, iconFile);
+	    	} else {
+	    		log.warning("Custom icon " + iconFile.toPath() + " could not be read.");
+	    		icon = new Icon("image/png", 48, 48, 8, new File("icon.png"));
+	    	}
+    	} catch (IOException e) {
+    		log.warning("IO Exception trying to load icon file at " + iconFile.toPath());
+    	}
+    	return icon;
+    }
+    
+    /**
      * Creates a new CliMediaRenderer device and sets up all of the appropriate services.
      * @param deviceDetails Details about this device
      * @throws ValidationException 
@@ -131,9 +154,7 @@ public class CliMediaRenderer {
     @SuppressWarnings("unchecked")
 	public CliMediaRenderer(DeviceDetails deviceDetails) throws IllegalArgumentException, 
 		ValidationException, IOException {
-    
-    	Icon icon = new Icon("image/png", 48, 48, 8, new File("icon.png"));
-    	
+        	
         LocalService<CliMRConnectionManagerService> connectionManagerService = serviceBinder.read(CliMRConnectionManagerService.class);
         connectionServiceManager =
                 new DefaultServiceManager<CliMRConnectionManagerService>(connectionManagerService) {
@@ -174,7 +195,7 @@ public class CliMediaRenderer {
                 new DeviceIdentity(UDN.uniqueSystemIdentifier("Cling MediaRenderer")),
                 new UDADeviceType("MediaRenderer", 1),
                 deviceDetails,
-                icon,
+                loadIcon(),
                 new LocalService[]{
                         audioTransportService,
                         renderingControlService,
@@ -198,6 +219,7 @@ public class CliMediaRenderer {
                     while (true) {
                         // These operations will NOT block and wait for network responses
                         audioTransportServiceManager.fireLastChange();
+                        renderingControlServiceManager.fireLastChange();
                         Thread.sleep(250);
                     }
                 } catch (Exception ex) {
