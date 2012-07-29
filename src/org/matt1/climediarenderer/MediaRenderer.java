@@ -1,6 +1,5 @@
 package org.matt1.climediarenderer;
 
-
 import org.fourthline.cling.UpnpServiceImpl;
 import org.matt1.climediarenderer.services.CliMediaRenderer;
 import org.matt1.climediarenderer.utils.PropertyHelper;
