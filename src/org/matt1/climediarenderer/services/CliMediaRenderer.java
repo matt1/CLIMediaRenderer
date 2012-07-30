@@ -202,7 +202,7 @@ public class CliMediaRenderer {
                     while (true) {
                         audioTransportServiceManager.fireLastChange();
                         renderingControlServiceManager.fireLastChange();
-                        Thread.sleep(250);
+                        Thread.sleep(1000);
                     }
                 } catch (Exception ex) {
                 	log.info("Exception caught in lastChangeThread(): " + ex.getMessage());
