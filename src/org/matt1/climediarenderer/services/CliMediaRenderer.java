@@ -125,7 +125,7 @@ public class CliMediaRenderer {
 	    		icon = new Icon("image/png", 48, 48, 8, new File("icon.png"));
 	    	}
     	} catch (IOException e) {
-    		log.warning("IO Exception trying to load icon file at " + iconFile.toPath());
+    		log.warning("IO Exception trying to load icon file at " + PropertyHelper.getIconPath());
     	}
     	return icon;
     }
