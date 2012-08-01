@@ -49,6 +49,13 @@ public class VlcjPlayer implements BasicPlayer {
 		}
 	};
 
+	/** Basic main class to allow testing on the hardware */
+	public static void main(String[] args) throws PlayerException, InterruptedException {
+		VlcjPlayer player = new VlcjPlayer(args[0]);
+		player.play();
+		Thread.sleep(10000);
+	}
+	
 	/**
 	 * Create a new VLCJ media player using the JNA native library path provided in the jnaPath
 	 * property.
