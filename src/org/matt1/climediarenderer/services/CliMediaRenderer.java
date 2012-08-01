@@ -75,6 +75,9 @@ public class CliMediaRenderer {
     /** Default model site */
     private static final String MODEL_SITE = MANUFACTURER_SITE;
     
+    /** Longer lock for slower hardware/JRE */
+    protected static final int TIMEOUT = 2000;
+    
     /**
      * Creates a new device using the default device details
      * 
@@ -145,6 +148,11 @@ public class CliMediaRenderer {
                     protected CliMRConnectionManagerService createServiceInstance() throws Exception {
                         return new CliMRConnectionManagerService();
                     }
+                    
+                    @Override
+                    protected int getLockTimeoutMillis() {
+                        return TIMEOUT;
+                    }
                 };
         connectionManagerService.setManager(connectionServiceManager);
 
@@ -156,6 +164,10 @@ public class CliMediaRenderer {
                     @Override
                     protected CliMRAVTransportService createServiceInstance() throws Exception {
                         return new CliMRAVTransportService(avTransportLastChange);
+                    }
+                    @Override
+                    protected int getLockTimeoutMillis() {
+                        return TIMEOUT;
                     }
                 };
         audioTransportService.setManager(audioTransportServiceManager);
@@ -169,6 +181,10 @@ public class CliMediaRenderer {
                     @Override
                     protected CliMRAudioRenderingControl createServiceInstance() throws Exception {
                         return new CliMRAudioRenderingControl(renderingControlLastChange);
+                    }
+                    @Override
+                    protected int getLockTimeoutMillis() {
+                        return TIMEOUT;
                     }
                 };
        renderingControlService.setManager(renderingControlServiceManager);
