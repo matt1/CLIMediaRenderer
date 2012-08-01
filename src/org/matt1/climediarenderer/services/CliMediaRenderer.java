@@ -121,7 +121,7 @@ public class CliMediaRenderer {
 	    	if (iconFile.exists() && iconFile.canRead()) {
 	    		icon = new Icon("image/png", 48, 48, 8, iconFile);
 	    	} else {
-	    		log.warning("Custom icon " + iconFile.toPath() + " could not be read.");
+	    		log.warning("Custom icon " + PropertyHelper.getIconPath() + " could not be read.");
 	    		icon = new Icon("image/png", 48, 48, 8, new File("icon.png"));
 	    	}
     	} catch (IOException e) {
