@@ -34,14 +34,6 @@ public class PropertyHelper {
 	}
 	
 	/**
-	 * Gets the path to the VLC library
-	 * @return
-	 */
-	public static String getVLCPath() {
-		return (String) properties.get("jnaPath");
-	}
-	
-	/**
 	 * Gets the path to MPlayer
 	 * @return
 	 */

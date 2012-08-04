@@ -8,9 +8,6 @@
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/seamless-util-1.0-20111017.170503-1.jar"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/seamless-xml-1.0-20111129.053837-2.jar"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/seamless-http-1.0-20111017.170623-1.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/jna-3.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/platform-3.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/vlcj-2.1.0.jar"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/httpcore-4.2.1.jar" sourcepath="C:/Users/Matt/Desktop/httpcomponents-core-4.2.1-src/httpcomponents-core-4.2.1"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/httpclient-4.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/commons-logging-1.1.1.jar"/>

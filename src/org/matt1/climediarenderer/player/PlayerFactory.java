@@ -21,7 +21,7 @@ public class PlayerFactory {
 		if (type.equals("mplayer")) {
 			return new MPlayer(mediaPath);
 		} else {
-			return new VlcjPlayer(mediaPath);
+			throw new PlayerException("Unknown media player type");
 		}
 	}
 	
