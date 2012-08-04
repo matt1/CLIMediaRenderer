@@ -22,7 +22,7 @@ import org.fourthline.cling.support.model.TransportSettings;
 import org.fourthline.cling.support.model.TransportState;
 import org.matt1.climediarenderer.player.BasicPlayer;
 import org.matt1.climediarenderer.player.PlayerException;
-import org.matt1.climediarenderer.player.VlcjPlayer;
+import org.matt1.climediarenderer.player.PlayerFactory;
 import org.seamless.http.HttpFetch;
 import org.seamless.util.URIUtil;
 
@@ -86,7 +86,11 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
         }
         
         // Instantiate a new player
-		player = new VlcjPlayer(uri.toString());
+		try {
+			player = PlayerFactory.getPlayer(uri.toString());
+		} catch (PlayerException e) {
+			throw new AVTransportException(ErrorCode.HUMAN_INTERVENTION_REQUIRED, "Unable to start media player backend.");
+		}
 
 		// Build media info
 		String duration = ModelUtil.toTimeString(player.getDuration());

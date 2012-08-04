@@ -26,11 +26,27 @@ public class PropertyHelper {
 	}
 	
 	/**
+	 * Gets the playerType property for use by the player factory
+	 * @return
+	 */
+	public static String getMediaPlayer() {
+		return (String) properties.get("playerType");
+	}
+	
+	/**
 	 * Gets the path to the VLC library
 	 * @return
 	 */
 	public static String getVLCPath() {
 		return (String) properties.get("jnaPath");
+	}
+	
+	/**
+	 * Gets the path to MPlayer
+	 * @return
+	 */
+	public static String getMPlayerPath() {
+		return (String) properties.get("mplayerPath");
 	}
 	
 	/**
