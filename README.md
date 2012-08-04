@@ -14,9 +14,8 @@ I could have just deployed something like XMBC to the remote devices but I wante
 Sources
 =======
 
-This app uses two key components:
+This app uses one key component:
 - Cling UPnP framework (LGPL) - http://4thline.org/projects/cling/
-- VLCJ (GPL) - https://github.com/caprica/vlcj
 
 The core of the UPnP code was based loosely on the Cling examples.
 
