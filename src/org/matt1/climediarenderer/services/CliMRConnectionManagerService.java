@@ -17,7 +17,9 @@ public class CliMRConnectionManagerService extends ConnectionManagerService {
      * Basic MP3 support only for now...
      */
     public CliMRConnectionManagerService() {
-                sinkProtocolInfo.add(new ProtocolInfo("audio/mpeg3"));
+        sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mp3:*"));
+    	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mpeg:*"));
+    	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mpeg3:*"));
           
     }
     

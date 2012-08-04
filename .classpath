@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/cling-core-2.0-20111017.171724-1.jar" sourcepath="C:/Users/Matt/Desktop/4thline-cling-6985c66/4thline-cling-6985c66"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/teleal-common-1.0.6.jar"/>
-	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/cling-support-2.0-20111017.171832-1.jar" sourcepath="C:/Users/Matt/Desktop/cling-distribution-2.0-SNAPSHOT/cling-distribution-2.0-SNAPSHOT/support/src/main/java"/>
+	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/cling-support-2.0-20111017.171832-1.jar" sourcepath="C:/Users/Matt/Desktop/4thline-cling-6985c66"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/seamless-util-1.0-20111017.170503-1.jar"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/seamless-xml-1.0-20111129.053837-2.jar"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/seamless-http-1.0-20111017.170623-1.jar"/>

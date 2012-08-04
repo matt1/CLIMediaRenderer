@@ -44,7 +44,7 @@ public class CliMRAudioRenderingControl extends AbstractAudioRenderingControl {
     @Override
     public UnsignedIntegerTwoBytes getVolume(UnsignedIntegerFourBytes instId, String channelName) 
     		throws RenderingControlException {
-        return null;
+        return new UnsignedIntegerTwoBytes(0);
     }
 
     @Override
@@ -55,11 +55,11 @@ public class CliMRAudioRenderingControl extends AbstractAudioRenderingControl {
 
     @Override
     protected Channel[] getCurrentChannels() {
-    	return null;
+    	return new Channel[]{Channel.Master};
     }
 
     @Override
     public UnsignedIntegerFourBytes[] getCurrentInstanceIds() {
-        return null;
+    	return new UnsignedIntegerFourBytes[]{getDefaultInstanceID()};
     }
 }
