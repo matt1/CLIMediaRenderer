@@ -2,7 +2,6 @@ package org.matt1.climediarenderer.services;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.logging.Logger;
 
 import org.fourthline.cling.binding.LocalServiceBinder;
@@ -124,8 +123,6 @@ public class CliMediaRenderer {
 	    		icon = new Icon("image/png", 48, 48, 8, iconFile);
 	    	} else {
 	    		log.warning("Custom icon " + PropertyHelper.getIconPath() + " could not be read.");
-	    		URL fileUrl = getClass().getResource("/icon.png");
-	    		icon = new Icon("image/png", 48, 48, 8, fileUrl);
 	    	}
     	} catch (IOException e) {
     		log.warning("IO Exception trying to load icon file at " + PropertyHelper.getIconPath());
