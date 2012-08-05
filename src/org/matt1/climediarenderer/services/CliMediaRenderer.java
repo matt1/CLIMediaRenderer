@@ -2,6 +2,7 @@ package org.matt1.climediarenderer.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import org.fourthline.cling.binding.LocalServiceBinder;
@@ -22,6 +23,7 @@ import org.fourthline.cling.support.avtransport.lastchange.AVTransportLastChange
 import org.fourthline.cling.support.lastchange.LastChange;
 import org.fourthline.cling.support.lastchange.LastChangeAwareServiceManager;
 import org.fourthline.cling.support.renderingcontrol.lastchange.RenderingControlLastChangeParser;
+import org.matt1.climediarenderer.managers.LenientChangeAwareServiceManager;
 import org.matt1.climediarenderer.utils.PropertyHelper;
 
 /**
@@ -122,7 +124,8 @@ public class CliMediaRenderer {
 	    		icon = new Icon("image/png", 48, 48, 8, iconFile);
 	    	} else {
 	    		log.warning("Custom icon " + PropertyHelper.getIconPath() + " could not be read.");
-	    		icon = new Icon("image/png", 48, 48, 8, new File("icon.png"));
+	    		URL fileUrl = getClass().getResource("/icon.png");
+	    		icon = new Icon("image/png", 48, 48, 8, fileUrl);
 	    	}
     	} catch (IOException e) {
     		log.warning("IO Exception trying to load icon file at " + PropertyHelper.getIconPath());
@@ -158,7 +161,7 @@ public class CliMediaRenderer {
 
         LocalService<CliMRAVTransportService> audioTransportService = serviceBinder.read(CliMRAVTransportService.class);
         audioTransportServiceManager =
-                new LastChangeAwareServiceManager<CliMRAVTransportService>(
+                new LenientChangeAwareServiceManager<CliMRAVTransportService>(
                         audioTransportService,
                         new AVTransportLastChangeParser()) {
                     @Override
@@ -174,7 +177,7 @@ public class CliMediaRenderer {
 
         LocalService<CliMRAudioRenderingControl> renderingControlService = serviceBinder.read(CliMRAudioRenderingControl.class);
         renderingControlServiceManager =
-                new LastChangeAwareServiceManager<CliMRAudioRenderingControl>(
+                new LenientChangeAwareServiceManager<CliMRAudioRenderingControl>(
                         renderingControlService,
                         new RenderingControlLastChangeParser()
                 ) {

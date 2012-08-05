@@ -40,7 +40,7 @@ public class MPlayer implements BasicPlayer {
 			mPlayer = Runtime.getRuntime().exec(PropertyHelper.getMPlayerPath() + " -slave -quiet -idle "); // + mediaPath);
 			mPlayerStream = new PrintStream(mPlayer.getOutputStream());
 			this.mediaPath = mediaPath;
-
+			log.info("New MPlayer player ready.");
 		} catch (IOException e) {
 			log.warning("Unable to create MPlayer instance.");
 			throw new PlayerException("Unable to instantiate player.");
@@ -63,6 +63,7 @@ public class MPlayer implements BasicPlayer {
 	@Override
 	public void play() throws PlayerException {
 		sendCommand("loadfile \"" + mediaPath + "\" 0");
+		log.info("MPlayer player: play");
 		
 
 	}
@@ -70,18 +71,20 @@ public class MPlayer implements BasicPlayer {
 	@Override
 	public void stop() throws PlayerException {
 		sendCommand("stop");
-
+		log.info("MPlayer player: stop");
 	}
 
 	@Override
 	public void pause() throws PlayerException {
 		sendCommand("pause");
+		log.info("MPlayer player: pause");
 
 	}
 
 	@Override
 	public void skip(long seconds) throws PlayerException {
 		// TODO Auto-generated method stub
+		log.info("MPlayer player: skip " + seconds + "s");
 
 	}
 
@@ -105,8 +108,7 @@ public class MPlayer implements BasicPlayer {
 
 	@Override
 	public String getCurrentUri() {
-		// TODO Auto-generated method stub
-		return null;
+		return mediaPath;
 	}
 
 }
