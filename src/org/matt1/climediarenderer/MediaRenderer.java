@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.fourthline.cling.UpnpServiceImpl;
+import org.matt1.climediarenderer.services.CliMRAVTransportService;
 import org.matt1.climediarenderer.services.CliMediaRenderer;
 import org.matt1.climediarenderer.utils.PropertyHelper;
 
@@ -16,6 +17,11 @@ import org.matt1.climediarenderer.utils.PropertyHelper;
  */
 public class MediaRenderer {
 
+
+	/** Basic logger */
+    final private static Logger log = Logger.getLogger(CliMRAVTransportService.class.getName());
+
+	
 	/**
 	 * Sets up logging, creates the new CliMediaRenderer instance and then starts UPnP
 	 * 
@@ -23,6 +29,9 @@ public class MediaRenderer {
 	 * @throws Exception
 	 */
     public static void main(final String[] args) throws Exception {
+    	
+    	log.info("Please wait - starting up...");
+    	
     	configureLogging();
     	
     	CliMediaRenderer mediaRenderer = new CliMediaRenderer(PropertyHelper.getName());

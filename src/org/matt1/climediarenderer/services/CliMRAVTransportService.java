@@ -35,6 +35,7 @@ import org.seamless.util.URIUtil;
  */
 public class CliMRAVTransportService extends AbstractAVTransportService {
 
+	/** Basic logger */
     final private static Logger log = Logger.getLogger(CliMRAVTransportService.class.getName());
 
     /** The player instance that we are going to use for playback */
