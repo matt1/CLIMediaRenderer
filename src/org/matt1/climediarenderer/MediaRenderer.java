@@ -36,11 +36,10 @@ public class MediaRenderer {
     }
     
     /**
-     * Setup logging level
+     * Setup logging level to hide all the noise from Cling
      */
     private static void  configureLogging() {
-    	Logger global = Logger.getGlobal();
-    	global.setLevel(Level.SEVERE);
+    	Logger.getLogger("org.fourthline").setLevel(Level.OFF);
     }
 
 

@@ -191,7 +191,7 @@ public class CliMediaRenderer {
 
         
         uPnPDevice = new LocalDevice(
-                new DeviceIdentity(UDN.uniqueSystemIdentifier("Cling MediaRenderer")),
+                new DeviceIdentity(UDN.uniqueSystemIdentifier("CLI Media Renderer")),
                 new UDADeviceType("MediaRenderer", 1),
                 deviceDetails,
                 loadIcon(),
@@ -204,6 +204,8 @@ public class CliMediaRenderer {
 
         // Finally setup last change thread to send updates back to subscribers.
         initChangeThread();
+        
+        log.info("CLI Media Renderer ready.");
     }
 
     /**

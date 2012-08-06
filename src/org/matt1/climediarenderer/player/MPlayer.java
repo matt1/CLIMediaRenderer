@@ -39,6 +39,7 @@ public class MPlayer implements BasicPlayer {
 		public void run() {
 			try {
 				getInstance().destroy();
+				log.info("Killed child mplayer process");
 			} catch (IOException e) {
 				log.warning("Unable to kill child MPlayer process");
 			}
