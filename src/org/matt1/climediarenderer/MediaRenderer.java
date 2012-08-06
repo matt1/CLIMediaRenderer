@@ -1,5 +1,8 @@
 package org.matt1.climediarenderer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.fourthline.cling.UpnpServiceImpl;
 import org.matt1.climediarenderer.services.CliMediaRenderer;
 import org.matt1.climediarenderer.utils.PropertyHelper;
@@ -13,8 +16,15 @@ import org.matt1.climediarenderer.utils.PropertyHelper;
  */
 public class MediaRenderer {
 
+	/**
+	 * Sets up logging, creates the new CliMediaRenderer instance and then starts UPnP
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
     public static void main(final String[] args) throws Exception {
-
+    	configureLogging();
+    	
     	CliMediaRenderer mediaRenderer = new CliMediaRenderer(PropertyHelper.getName());
 
     	UpnpServiceImpl upnp = new UpnpServiceImpl(new ApacheServiceConfiguration());
@@ -23,6 +33,14 @@ public class MediaRenderer {
                 mediaRenderer.getDevice()
         );
 
+    }
+    
+    /**
+     * Setup logging level
+     */
+    private static void  configureLogging() {
+    	Logger global = Logger.getGlobal();
+    	global.setLevel(Level.SEVERE);
     }
 
 

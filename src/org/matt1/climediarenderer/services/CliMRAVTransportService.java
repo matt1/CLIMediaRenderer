@@ -129,7 +129,7 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
 		if (player == null) {
 			// nop
 		} else {
-			long position = player.getPosition();
+			long position = (long) player.getPositionPercentage();
 			long duration = player.getDuration();
 			String positionString = ModelUtil.toTimeString(position);
 			String durationString = ModelUtil.toTimeString(duration);
