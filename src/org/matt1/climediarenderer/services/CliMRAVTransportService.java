@@ -87,6 +87,9 @@ public class CliMRAVTransportService extends AbstractAVTransportService {
         
         // Instantiate a new player
 		try {
+			if (player != null) {
+				player.cleanup();
+			}
 			player = PlayerFactory.getPlayer(uri.toString());
 		} catch (PlayerException e) {
 			throw new AVTransportException(ErrorCode.HUMAN_INTERVENTION_REQUIRED, "Unable to start media player backend.");

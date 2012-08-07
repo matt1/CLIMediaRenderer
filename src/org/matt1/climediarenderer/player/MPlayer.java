@@ -19,7 +19,7 @@ public class MPlayer implements BasicPlayer {
 	private static Logger log = Logger.getLogger(CliMediaRenderer.class.getName());
 	
 	/** Process that is controlling MPlayer */
-	Process mPlayer;
+	Process mPlayer = null;
 	
 	/** Print Stream for writing commands to MPlayer */
 	PrintStream mPlayerStream;
@@ -27,6 +27,19 @@ public class MPlayer implements BasicPlayer {
 	/** Path for the media */
 	String mediaPath;
 	
+	/** Clean up any process we've left behind. */
+	protected Thread cleanupThread = new Thread() {
+		public void run() {
+			cleanup();
+		}
+	};
+	
+	/**
+	 * Simple test method.
+	 * @param args
+	 * @throws PlayerException
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws PlayerException, InterruptedException {
 		MPlayer player = new MPlayer("http://192.168.1.68:50599/disk/DLNA-PNMP3-OP01-FLAGS01700000/O0$1$8I450314.mp3");
 		player.play();
@@ -35,15 +48,30 @@ public class MPlayer implements BasicPlayer {
 		
 	}
 	
+	/**
+	 * Create a new MPlayer
+	 * @param mediaPath
+	 * @throws PlayerException
+	 */
 	public MPlayer(String mediaPath) throws PlayerException {
 		try {
-			mPlayer = Runtime.getRuntime().exec(PropertyHelper.getMPlayerPath() + " -slave -quiet -idle "); // + mediaPath);
+			mPlayer = Runtime.getRuntime().exec(PropertyHelper.getMPlayerPath() + " -slave -quiet -idle "); 
 			mPlayerStream = new PrintStream(mPlayer.getOutputStream());
 			this.mediaPath = mediaPath;
+			Runtime.getRuntime().addShutdownHook(cleanupThread);
 			log.info("New MPlayer player ready.");
 		} catch (IOException e) {
 			log.warning("Unable to create MPlayer instance.");
 			throw new PlayerException("Unable to instantiate player.");
+		}
+	}
+	
+	/**
+	 * Clean up any process left over.
+	 */
+	public void cleanup() {
+		if (mPlayer != null) {
+			mPlayer.destroy();
 		}
 	}
 	

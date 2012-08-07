@@ -16,6 +16,7 @@ public class PlayerFactory {
 	 * @throws PlayerException 
 	 */
 	public static BasicPlayer getPlayer(String mediaPath) throws PlayerException {
+		
 		String type = PropertyHelper.getMediaPlayer().toLowerCase();
 		
 		if (type.equals("mplayer")) {
@@ -23,6 +24,9 @@ public class PlayerFactory {
 		} else {
 			throw new PlayerException("Unknown media player type");
 		}
+		
+		
+	
 	}
 	
 }

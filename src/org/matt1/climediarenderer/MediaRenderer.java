@@ -1,5 +1,8 @@
 package org.matt1.climediarenderer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.fourthline.cling.UpnpServiceImpl;
 import org.matt1.climediarenderer.services.CliMediaRenderer;
 import org.matt1.climediarenderer.utils.PropertyHelper;
@@ -15,6 +18,8 @@ public class MediaRenderer {
 
     public static void main(final String[] args) throws Exception {
 
+    	configureLogging();
+    	
     	CliMediaRenderer mediaRenderer = new CliMediaRenderer(PropertyHelper.getName());
 
     	UpnpServiceImpl upnp = new UpnpServiceImpl(new ApacheServiceConfiguration());
@@ -25,5 +30,10 @@ public class MediaRenderer {
 
     }
 
-
+    /**
+     * Setup logging level to hide all the noise from Cling
+     */
+    private static void configureLogging() {
+    	Logger.getLogger("org.fourthline").setLevel(Level.OFF);
+    }
 }

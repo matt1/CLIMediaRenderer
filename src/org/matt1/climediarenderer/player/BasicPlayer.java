@@ -62,4 +62,7 @@ public interface BasicPlayer {
 	 * @return
 	 */
 	public String getCurrentUri();
+	
+	/** Cleanup anything that the garbage collector wont get like processes */
+	public void cleanup();
 }
