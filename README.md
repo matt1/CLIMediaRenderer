@@ -5,7 +5,7 @@ Cli Media Renderer is a command-line UPnP audio media renderer/DNLA DMR design f
 Why?
 ====
 I was looking for a simple no-fuss command line media renderer for a project I was working on for multi-room audio running on cheap storage-free computers (i.e. Raspberry Pi machines) but couldn't find anything that really met my needs.  There seems to be many, many options for running a 
-media *server*, but not many options for a headless audio player.
+media *server*, but not many options for a headless UPnP media renderer which is a little bit odd considering how many options there are for servers.  VLC, MPlayer et al are great for the commandline but you need a way to control them over UPnP, so this is basically that missing link: a UPnP->Commandline audio player bridge.
 
 I could have used Squeezebox/Squeeze player but they apparently do not support UPnP which was a big letdown as my NAS only does UPnP and I didn't feel like hacking its firmware to support it.  Also there is a large amount of UPnP compatible software, and I can even use the "Play to" feature from Windows 7 with UPnP.
 
