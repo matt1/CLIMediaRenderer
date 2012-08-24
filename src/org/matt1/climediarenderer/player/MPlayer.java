@@ -41,7 +41,7 @@ public class MPlayer implements BasicPlayer {
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws PlayerException, InterruptedException {
-		MPlayer player = new MPlayer("http://192.168.1.68:50599/disk/DLNA-PNMP3-OP01-FLAGS01700000/O0$1$8I450314.mp3");
+		MPlayer player = new MPlayer("http://monkeydrive:50599/disk/DLNA-PNMP3-OP01-FLAGS01700000/O0$1$8I450314.mp3");
 		player.play();
 		Thread.sleep(10000);
 		player.stop();

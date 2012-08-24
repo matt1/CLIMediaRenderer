@@ -57,4 +57,19 @@ public class PropertyHelper {
 		return (String) properties.getProperty("icon");
 	}
 	
+	/**
+	 * Gets the hostname of the MPD client
+	 * @return
+	 */
+	public static String getMPDHost() {
+		return (String) properties.getProperty("mpdHost");
+	}
+	
+	/**
+	 * Gets the port of the MPD client
+	 * @return
+	 */
+	public static int getMPDPort() {
+		return Integer.valueOf(properties.getProperty("mpdPort"));
+	}
 }

@@ -8,7 +8,7 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="org.matt1.climediarenderer.MediaRenderer"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ cling-core-2.0-20111017.171724-1.jar teleal-common-1.0.6.jar cling-support-2.0-20111017.171832-1.jar seamless-util-1.0-20111017.170503-1.jar seamless-xml-1.0-20111129.053837-2.jar seamless-http-1.0-20111017.170623-1.jar httpcore-4.2.1.jar httpclient-4.2.1.jar commons-logging-1.1.1.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ cling-core-2.0-20111017.171724-1.jar teleal-common-1.0.6.jar cling-support-2.0-20111017.171832-1.jar seamless-util-1.0-20111017.170503-1.jar seamless-xml-1.0-20111129.053837-2.jar seamless-http-1.0-20111017.170623-1.jar httpcore-4.2.1.jar httpclient-4.2.1.jar commons-logging-1.1.1.jar javampd-4.1.jar"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
             <fileset dir="C:/workspace/CLIMediaRenderer/bin"/>
@@ -21,6 +21,7 @@
             <zipfileset dir="C:\workspace\CLIMediaRenderer" includes="httpcore-4.2.1.jar"/>
             <zipfileset dir="C:\workspace\CLIMediaRenderer" includes="httpclient-4.2.1.jar"/>
             <zipfileset dir="C:\workspace\CLIMediaRenderer" includes="commons-logging-1.1.1.jar"/>
+            <zipfileset dir="C:\workspace\CLIMediaRenderer" includes="javampd-4.1.jar"/>
         </jar>
     </target>
 </project>

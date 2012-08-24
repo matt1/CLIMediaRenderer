@@ -11,6 +11,13 @@ I could have used Squeezebox/Squeeze player but they apparently do not support U
 
 I could have just deployed something like XMBC to the remote devices but I wanted something as small and as light as possible that just ran as an application on the machine without installing a dedicated XMBC image.
 
+So what can you use it for then?
+================================
+
+The idea is that you have a Raspberry Pi in each room that you want audio in, hook them up to your network and some speakers then run the software.
+
+Get a central UPnP server to serve all of your audio (mine is a NAS drive that came with a built-in UPnP server), then use something like BubbleUPnP for your phone to control the audio playback in each room.
+
 Sources
 =======
 

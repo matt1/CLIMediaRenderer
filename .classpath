@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/httpcore-4.2.1.jar" sourcepath="C:/Users/Matt/Desktop/httpcomponents-core-4.2.1-src/httpcomponents-core-4.2.1"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/httpclient-4.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/workspace/CLIMediaRenderer/javampd-4.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
