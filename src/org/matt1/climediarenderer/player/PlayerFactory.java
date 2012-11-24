@@ -16,15 +16,18 @@ public class PlayerFactory {
 	 * @throws PlayerException 
 	 */
 	public static BasicPlayer getPlayer(String mediaPath) throws PlayerException {
-		
-		String type = PropertyHelper.getMediaPlayer().toLowerCase();
+		String type;
+		try {
+			type = PropertyHelper.getInstance().getMediaPlayer().toLowerCase();
+		} catch (Exception e) {
+			throw new PlayerException("Unable to load media player type from config: " + e.getMessage());
+		}
 		
 		if (type.equals("mplayer")) {
 			return new MPlayer(mediaPath);
 		} else {
 			throw new PlayerException("Unknown media player type");
 		}
-		
 		
 	
 	}

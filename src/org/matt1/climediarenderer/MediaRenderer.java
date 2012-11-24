@@ -20,13 +20,17 @@ public class MediaRenderer {
 
     	configureLogging();
     	
-    	CliMediaRenderer mediaRenderer = new CliMediaRenderer(PropertyHelper.getName());
-
-    	UpnpServiceImpl upnp = new UpnpServiceImpl(new ApacheServiceConfiguration());
-    	
-    	upnp.getRegistry().addDevice(
-                mediaRenderer.getDevice()
-        );
+    	try {
+	    	CliMediaRenderer mediaRenderer = new CliMediaRenderer(PropertyHelper.getInstance().getName());
+	
+	    	UpnpServiceImpl upnp = new UpnpServiceImpl(new ApacheServiceConfiguration());
+	    	
+	    	upnp.getRegistry().addDevice(
+	                mediaRenderer.getDevice()
+	        );
+    	} catch (Exception e) {
+    		Logger.getLogger(MediaRenderer.class.getName()).severe("Unexpected error starting up: " + e.getMessage());
+    	}
 
     }
 

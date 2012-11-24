@@ -12,24 +12,37 @@ import java.util.Properties;
  */
 public class PropertyHelper {
 
-	private static Properties properties = new Properties();
-	static {
-		try {
-			properties.load(new FileInputStream("cliMediaRenderer.properties"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	private Properties properties;
+	private static PropertyHelper propertyHelper;
+
+	
+	public static PropertyHelper getInstance() throws Exception {
+		
+		if (propertyHelper == null) {
+		
+			propertyHelper = new PropertyHelper();
+			
+			try {
+				propertyHelper.properties.load(new FileInputStream("cliMediaRenderer.properties"));
+			} catch (FileNotFoundException e) {
+				throw new Exception("File not found: ./cliMediaRenderer.properties", e);
+			} catch (IOException e) {
+				throw new Exception("Cannot open file: ./cliMediaRenderer.properties", e);
+			}
 		}
+		return propertyHelper;
+	}
+	
+	private PropertyHelper() {
+		properties = new Properties();
+		
 	}
 	
 	/**
 	 * Gets the playerType property for use by the player factory
 	 * @return
 	 */
-	public static String getMediaPlayer() {
+	public String getMediaPlayer() {
 		return (String) properties.get("playerType");
 	}
 	
@@ -37,7 +50,7 @@ public class PropertyHelper {
 	 * Gets the path to MPlayer
 	 * @return
 	 */
-	public static String getMPlayerPath() {
+	public String getMPlayerPath() {
 		return (String) properties.get("mplayerPath");
 	}
 	
@@ -45,7 +58,7 @@ public class PropertyHelper {
 	 * Gets the name of the player
 	 * @return
 	 */
-	public static String getName() {
+	public String getName() {
 		return (String) properties.getProperty("name");
 	}
 	
@@ -53,7 +66,7 @@ public class PropertyHelper {
 	 * Gets the path to the icon file
 	 * @return
 	 */
-	public static String getIconPath() {
+	public String getIconPath() {
 		return (String) properties.getProperty("icon");
 	}
 	
@@ -61,7 +74,7 @@ public class PropertyHelper {
 	 * Gets the hostname of the MPD client
 	 * @return
 	 */
-	public static String getMPDHost() {
+	public String getMPDHost() {
 		return (String) properties.getProperty("mpdHost");
 	}
 	
@@ -69,7 +82,7 @@ public class PropertyHelper {
 	 * Gets the port of the MPD client
 	 * @return
 	 */
-	public static int getMPDPort() {
+	public int getMPDPort() {
 		return Integer.valueOf(properties.getProperty("mpdPort"));
 	}
 }

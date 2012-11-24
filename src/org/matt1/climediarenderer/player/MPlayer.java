@@ -55,7 +55,7 @@ public class MPlayer implements BasicPlayer {
 	 */
 	public MPlayer(String mediaPath) throws PlayerException {
 		try {
-			mPlayer = Runtime.getRuntime().exec(PropertyHelper.getMPlayerPath() + " -slave -quiet -idle "); 
+			mPlayer = Runtime.getRuntime().exec(PropertyHelper.getInstance().getMPlayerPath() + " -slave -quiet -idle "); 
 			mPlayerStream = new PrintStream(mPlayer.getOutputStream());
 			this.mediaPath = mediaPath;
 			Runtime.getRuntime().addShutdownHook(cleanupThread);
@@ -63,6 +63,8 @@ public class MPlayer implements BasicPlayer {
 		} catch (IOException e) {
 			log.warning("Unable to create MPlayer instance.");
 			throw new PlayerException("Unable to instantiate player.");
+		} catch (Exception e) {
+			log.severe(e.getMessage());
 		}
 	}
 	

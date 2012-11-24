@@ -79,6 +79,9 @@ public class CliMediaRenderer {
     /** Longer lock for slower hardware/JRE */
     protected static final int TIMEOUT = 2000;
     
+    /** PropertyHelper instance */
+    protected PropertyHelper properties;
+    
     /**
      * Creates a new device using the default device details
      * 
@@ -86,13 +89,14 @@ public class CliMediaRenderer {
      * @throws ValidationException
      * @throws IOException 
      */
-    public CliMediaRenderer() throws IllegalArgumentException, ValidationException, IOException {
-        
+    public CliMediaRenderer() throws IllegalArgumentException, ValidationException, IOException, Exception {
+    	
     	this(new DeviceDetails(
                 "CliMediaRenderer",
                 new ManufacturerDetails(MANUFACTURER_NAME, MANUFACTURER_SITE),
                 new ModelDetails(MODEL_NAME, MODEL_DESCRIPTION, MODEL_VERSION, MODEL_SITE)
         ));
+    	   
     }
     
     /**
@@ -104,7 +108,7 @@ public class CliMediaRenderer {
      * @throws IOException 
      */
     public CliMediaRenderer(String name) throws IllegalArgumentException, 
-    	ValidationException, IOException {
+    	ValidationException, IOException, Exception {
     	this(new DeviceDetails(
                 name,
                 new ManufacturerDetails(MANUFACTURER_NAME, MANUFACTURER_SITE),
@@ -113,19 +117,35 @@ public class CliMediaRenderer {
     }
     
     /**
+     * Try loading the properties from the configuration file.
+     * 
+     * @throws Exception
+     */
+    private void loadProperties() throws Exception {
+    	
+    	// Load properties
+    	try {
+			properties = PropertyHelper.getInstance();
+		} catch (Exception e) {
+			log.severe("Unable to load the config file! " + e.getMessage());
+			System.exit(1);
+		}	
+    }
+    
+    /**
      * Try loading the icon specified in the properties file
      */
     private Icon loadIcon() {
-    	File iconFile = new File(PropertyHelper.getIconPath());
+    	File iconFile = new File(properties.getIconPath());
     	Icon icon = null;
     	try {
 	    	if (iconFile.exists() && iconFile.canRead()) {
 	    		icon = new Icon("image/png", 48, 48, 8, iconFile);
 	    	} else {
-	    		log.warning("Custom icon " + PropertyHelper.getIconPath() + " could not be read.");
+	    		log.warning("Custom icon " + properties.getIconPath() + " could not be read.");
 	    	}
     	} catch (IOException e) {
-    		log.warning("IO Exception trying to load icon file at " + PropertyHelper.getIconPath());
+    		log.warning("IO Exception trying to load icon file at " + properties.getIconPath());
     	}
     	return icon;
     }
@@ -139,8 +159,10 @@ public class CliMediaRenderer {
      */
     @SuppressWarnings("unchecked")
 	public CliMediaRenderer(DeviceDetails deviceDetails) throws IllegalArgumentException, 
-		ValidationException, IOException {
+		ValidationException, IOException, Exception {
         	
+    	loadProperties();
+    	
         LocalService<CliMRConnectionManagerService> connectionManagerService = serviceBinder.read(CliMRConnectionManagerService.class);
         connectionServiceManager =
                 new DefaultServiceManager<CliMRConnectionManagerService>(connectionManagerService) {
