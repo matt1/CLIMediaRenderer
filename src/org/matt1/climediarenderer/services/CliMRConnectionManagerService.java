@@ -18,9 +18,13 @@ public class CliMRConnectionManagerService extends ConnectionManagerService {
      */
     public CliMRConnectionManagerService() {
         sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mp3:*"));
-    	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mpeg:*"));
+        sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mpeg:*"));
     	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mpeg3:*"));
-          
+    	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/flac:*"));
+    	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/ogg:*"));
+    	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mp4a-latm:*"));
+        sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/mp4:*"));
+    	sinkProtocolInfo.add(new ProtocolInfo("http-get:*:audio/x-aiff:*"));
     }
     
     public ProtocolInfos getSinkProtocolInfo() {
