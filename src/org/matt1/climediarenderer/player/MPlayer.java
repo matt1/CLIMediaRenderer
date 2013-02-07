@@ -1,6 +1,8 @@
 package org.matt1.climediarenderer.player;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.logging.Logger;
 
@@ -24,6 +26,9 @@ public class MPlayer implements BasicPlayer {
 	/** Print Stream for writing commands to MPlayer */
 	PrintStream mPlayerStream;
 	
+	/** Get Stream Response from MPlayer */
+	BufferedReader mPlayerResponse = null;
+	
 	/** Path for the media */
 	String mediaPath;
 	
@@ -40,8 +45,9 @@ public class MPlayer implements BasicPlayer {
 	 * @throws PlayerException
 	 * @throws InterruptedException
 	 */
+	
 	public static void main(String[] args) throws PlayerException, InterruptedException {
-		MPlayer player = new MPlayer("http://monkeydrive:50599/disk/DLNA-PNMP3-OP01-FLAGS01700000/O0$1$8I450314.mp3");
+		MPlayer player = new MPlayer("http://192.168.35.9:5000/webman/3rdparty/AudioStation/webUI/audiotransfer.cgi/b94043b978f2343c2a.flac");
 		player.play();
 		Thread.sleep(10000);
 		player.stop();
@@ -57,6 +63,7 @@ public class MPlayer implements BasicPlayer {
 		try {
 			mPlayer = Runtime.getRuntime().exec(PropertyHelper.getInstance().getMPlayerPath() + " -slave -quiet -idle "); 
 			mPlayerStream = new PrintStream(mPlayer.getOutputStream());
+			mPlayerResponse =  new BufferedReader(new InputStreamReader(mPlayer.getInputStream()));
 			this.mediaPath = mediaPath;
 			Runtime.getRuntime().addShutdownHook(cleanupThread);
 			log.info("New MPlayer player ready.");
@@ -113,27 +120,68 @@ public class MPlayer implements BasicPlayer {
 
 	@Override
 	public void skip(long seconds) throws PlayerException {
-		// TODO Auto-generated method stub
-		log.info("MPlayer player: skip " + seconds + "s");
+		sendCommand("set_property time_pos " + seconds);
+		log.info("MPlayer player: skip at " + seconds + "s");
 
 	}
 
 	@Override
 	public long getPosition() {
-		// TODO Auto-generated method stub
-		return 0;
+
+		sendCommand("get_property time_pos");
+		String answer;
+		int elapsedTime = -1;
+		try {
+			    while ((answer = mPlayerResponse.readLine()) != null) {
+			        if (answer.startsWith("ANS_time_pos=")) {
+			        	elapsedTime = Integer.parseInt(answer.substring("ANS_time_pos=".length()));
+			        	log.info("MPlayer elapsed time: " + elapsedTime );
+			            break;   
+			        }
+			    }
+			}
+			catch (IOException e) {
+			}
+		return elapsedTime;
 	}
 
 	@Override
 	public long getDuration() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		sendCommand("get_property length");
+		String answer;
+		int totalTime = -1;
+		try {
+			    while ((answer = mPlayerResponse.readLine()) != null) {
+			        if (answer.startsWith("ANS_length=")) {
+			        	totalTime = Integer.parseInt(answer.substring("ANS_length=".length()));
+			        	log.info("MPlayer track length: " + totalTime );
+			            break;   
+			        }
+			    }
+			}
+			catch (IOException e) {
+			}
+		return totalTime;
 	}
 
 	@Override
 	public float getPositionPercentage() {
-		// TODO Auto-generated method stub
-		return 0;
+		sendCommand("get_property percent_pos");
+		String answer;
+		int percentPos = -1;
+		try {
+			    while ((answer = mPlayerResponse.readLine()) != null) {
+			        if (answer.startsWith("ANS_percent_pos=")) {
+			        	percentPos = Integer.parseInt(answer.substring("ANS_percent_pos=".length())) / 100 ;
+			        	log.info("MPlayer position percent : " + percentPos );
+			        	break;   
+			        }
+			    }
+			}
+			catch (IOException e) {
+			}
+		return percentPos;
 	}
 
 	@Override
