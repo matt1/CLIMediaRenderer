@@ -23,12 +23,17 @@ public class PlayerFactory {
 			throw new PlayerException("Unable to load media player type from config: " + e.getMessage());
 		}
 		
-		if (type.equals("mplayer")) {
-			return new MPlayer(mediaPath);
-		} else {
-			throw new PlayerException("Unknown media player type");
-		}
-		
+		//Java 7 only
+		switch (type) {
+			case "mplayer":
+				return new MPlayer(mediaPath);
+				break;
+			case "mpd":
+				return new MusicPlayerDeamonPlayer(mediaPath);
+				break;
+			default:
+				throw new PlayerException("Unknown media player type");
+		}		
 	
 	}
 	
